@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Router } from 'express';
 const routes = Router();
 
-routes.get("/", async (request, response) => {
-  return response.json({ ok: true });
-});
+import UserController from './app/controllers/UserController';
 
-export default (app) => app.use("/api", routes);
+routes.post('/users', UserController.user);
+
+export default (app) => app.use('/api', routes);

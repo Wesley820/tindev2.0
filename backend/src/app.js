@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParder from 'body-parser';
 import helmet from 'helmet';
 import routes from './routes';
+import './database';
 
 class App {
   constructor() {
