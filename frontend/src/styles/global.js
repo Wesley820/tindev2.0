@@ -9,6 +9,7 @@ export default createGlobalStyle`
   }
 
   html, body, #root {
+    overflow: hidden;
     background-color: ${(props) => props.theme.primaryColor};
     height: 100%;
     font-size: 14px;

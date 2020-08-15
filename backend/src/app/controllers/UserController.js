@@ -1,7 +1,27 @@
 import User from '../models/User';
 import axios from 'axios';
+import { Op, Sequelize } from 'sequelize';
 
 class UserController {
+  async index(request, response) {
+    try {
+      const myId = request.params.id;
+
+      const users = await User.findAll({
+        where: {
+          [Op.not]: [{ id: myId }],
+        },
+        order: Sequelize.literal('random()'),
+      });
+
+      return response.json(users);
+    } catch (error) {
+      return response
+        .status(500)
+        .json({ error: 'Unexpected error when trying fetch users' });
+    }
+  }
+
   async user(request, response) {
     try {
       const { username } = request.body;
@@ -17,9 +37,10 @@ class UserController {
 
         try {
           const getUser = await axios.get(url);
-          const { bio, avatar_url, html_url } = getUser.data;
+          const { name, bio, avatar_url, html_url } = getUser.data;
 
           const newUserRegister = await User.create({
+            name,
             username,
             bio,
             avatar_url,
