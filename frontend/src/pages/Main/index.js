@@ -10,35 +10,42 @@ import CardUser from './CardUser';
 import { Container, CardContainer, EndUsers } from './styles';
 
 export default function Main() {
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const { user } = useAuth();
 
   //fetch data on API
   useEffect(() => {
     async function loadUsers() {
-      try {
-        const users = await axios.get(`/users/${user.id}`);
-        setUsers(users.data);
-      } catch (error) {}
+      const response = await axios.get(`/users/${user.id}`);
+      setUsers(response.data);
     }
 
     loadUsers();
   }, [user.id]);
 
   function handleSwipeAction(direction) {
-    let oldUsers;
-    oldUsers = users;
+    if (direction === 'up' || direction === 'down') return;
 
-    const user = oldUsers.pop();
+    const oldUsers = users;
+    const lastUser = oldUsers.pop();
+    console.log(lastUser);
 
     setTimeout(() => {
       setUsers([...oldUsers]);
-    }, 170);
+    }, 200);
 
     direction === 'left'
-      ? console.log(`Você deu dislike em ${user.username}`)
-      : console.log(`Você deu like em ${user.username}`);
+      ? handleDislikeUser(lastUser.id)
+      : handleLikeUser(lastUser.id);
+  }
+
+  async function handleLikeUser(userId) {
+    await axios.post(`/likes/${user.id}/${userId}`);
+  }
+
+  async function handleDislikeUser(userId) {
+    await axios.post(`/dislikes/${user.id}/${userId}`);
   }
 
   return (
@@ -53,7 +60,7 @@ export default function Main() {
                 className="swipe"
                 key={user.id}
                 onSwipe={handleSwipeAction}
-                preventSwipe={['down']}
+                preventSwipe={['up', 'down']}
               >
                 <CardUser user={user} />
               </TinderCard>

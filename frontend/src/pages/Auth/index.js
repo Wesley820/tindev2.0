@@ -4,24 +4,36 @@ import axios from '../../services/api';
 import { useAuth } from '../../contexts/user';
 
 import logo from '../../assets/logo.svg';
-import { Container, Content, Button } from './styles';
+import { Container, Content, Button, Error } from './styles';
 
 export default function Auth() {
   const { auth } = useAuth();
   const history = useHistory();
   const [input, setInput] = useState('');
+  const [error, setError] = useState(null);
 
   async function handleSubmitForm() {
     if (!input) {
+      setError('Nome de usuário é obrigatório.');
       return;
     }
 
-    const response = await axios.post('/users', {
-      username: input,
-    });
+    setError(null);
 
-    auth(response.data);
-    history.push('/main');
+    try {
+      const response = await axios.post('/users', {
+        username: input,
+      });
+      auth(response.data);
+      history.push('/main');
+    } catch (error) {
+      const statusMessageError = {
+        404: 'Este usuário não existe.',
+        500: 'Desculpe, um erro interno ocorreu.',
+      };
+
+      setError(statusMessageError[error.response.status]);
+    }
   }
 
   function handleInputChange(e) {
@@ -40,6 +52,7 @@ export default function Auth() {
         />
         <Button onClick={handleSubmitForm}>Entrar</Button>
       </Content>
+      <Error>{error}</Error>
     </Container>
   );
 }

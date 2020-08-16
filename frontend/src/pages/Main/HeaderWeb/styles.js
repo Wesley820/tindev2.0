@@ -38,6 +38,7 @@ export const HeaderMenu = styled.header`
     img {
       border-radius: 50%;
       height: 36px;
+      background-color: #fff;
       margin-right: 17.5px;
       border: 2px solid ${(props) => props.theme.thirdTextColor};
     }

@@ -23,8 +23,9 @@ export const CardContainer = styled.div`
     border-radius: 8px;
     max-height: 500px;
     height: 100%;
+    cursor: pointer;
 
-    + div {
+    + .swipe {
       box-shadow: none;
     }
   }
@@ -56,6 +57,7 @@ export const EndUsers = styled.div`
     margin-bottom: 15px;
     border-width: 5px;
     border-style: solid;
+    background-color: #fff;
     border-color: ${(props) => props.theme.linearColors[1]};
   }
 

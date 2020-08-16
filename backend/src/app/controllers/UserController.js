@@ -1,16 +1,37 @@
 import User from '../models/User';
 import axios from 'axios';
 import { Op, Sequelize } from 'sequelize';
+import Like from '../models/Like';
+import Dislike from '../models/Dislike';
 
 class UserController {
   async index(request, response) {
     try {
       const myId = request.params.id;
 
+      let likedUsers = await Like.findAll({
+        where: { user_emmiter: myId },
+        attributes: ['user_receive'],
+      });
+
+      let dislikedUsers = await Dislike.findAll({
+        where: { user_emmiter: myId },
+        attributes: ['user_receive'],
+      });
+
+      likedUsers = likedUsers.map((item) => item.user_receive);
+      dislikedUsers = dislikedUsers.map((item) => item.user_receive);
+
+      const totalUsers = likedUsers.concat(dislikedUsers);
+
       const users = await User.findAll({
         where: {
-          [Op.not]: [{ id: myId }],
+          [Op.and]: [
+            { id: { [Op.ne]: myId } },
+            { id: { [Op.notIn]: totalUsers } },
+          ],
         },
+        attributes: ['id', 'name', 'username', 'bio', 'html_url', 'avatar_url'],
         order: Sequelize.literal('random()'),
       });
 
@@ -18,7 +39,7 @@ class UserController {
     } catch (error) {
       return response
         .status(500)
-        .json({ error: 'Unexpected error when trying fetch users' });
+        .json({ error: 'Unexpected error fetching users.' });
     }
   }
 
@@ -50,14 +71,16 @@ class UserController {
           return response.status(201).json(newUserRegister);
         } catch (error) {
           return response
-            .status(400)
+            .status(404)
             .json({ error: 'This user does not exist.' });
         }
       }
 
       return response.json(user);
     } catch (error) {
-      return response.status(500).json({ error: 'Internal server error.' });
+      return response
+        .status(500)
+        .json({ error: 'Unexpected error signing in.' });
     }
   }
 }
