@@ -21,7 +21,9 @@ export default function HeaderWeb({ notifications, user }) {
       ) : (
         <NotificationContainer>
           <p>Matches</p>
-          <Notifications />
+          {notifications.map((user) => (
+            <Notifications user={user} />
+          ))}
         </NotificationContainer>
       )}
     </Container>

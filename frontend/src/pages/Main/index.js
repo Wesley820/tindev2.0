@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import TinderCard from 'react-tinder-card';
 import { useAuth } from '../../contexts/user';
 import axios from '../../services/api';
+import io from 'socket.io-client';
 
 import HeaderWeb from './HeaderWeb';
 import HeaderMobile from './HeaderMobile';
 import CardUser from './CardUser';
+import MatchModal from './MatchModal';
 
 import { Container, CardContainer, EndUsers } from './styles';
 
 export default function Main() {
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
+  const [matchUser, setMatchUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
   //fetch data on API
@@ -24,12 +27,23 @@ export default function Main() {
     loadUsers();
   }, [user.id]);
 
+  //connects to the server via sockets
+  useEffect(() => {
+    const socket = io('http://192.168.1.87:5000', {
+      query: { user: user.id },
+    });
+
+    socket.on('match', (user) => {
+      setMatchUser(user);
+      setNotifications([user, ...notifications]);
+    });
+  }, [user.id, notifications]);
+
   function handleSwipeAction(direction) {
     if (direction === 'up' || direction === 'down') return;
 
     const oldUsers = users;
     const lastUser = oldUsers.pop();
-    console.log(lastUser);
 
     setTimeout(() => {
       setUsers([...oldUsers]);
@@ -46,6 +60,10 @@ export default function Main() {
 
   async function handleDislikeUser(userId) {
     await axios.post(`/dislikes/${user.id}/${userId}`);
+  }
+
+  function handleCloseMatchModal() {
+    setMatchUser(false);
   }
 
   return (
@@ -73,6 +91,9 @@ export default function Main() {
             )}
           </CardContainer>
         </>
+      )}
+      {matchUser && (
+        <MatchModal onClose={handleCloseMatchModal} user={matchUser} />
       )}
     </Container>
   );

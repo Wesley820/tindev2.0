@@ -6,6 +6,7 @@ export const Container = styled.div`
   margin-bottom: 20px;
 
   img {
+    background-color: #fff;
     height: 40px;
     border-radius: 50%;
     margin-right: 12px;

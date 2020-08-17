@@ -7,7 +7,10 @@ class LikeController {
     try {
       const { emmiter, receive } = request.params;
 
-      if (!(await User.findByPk(emmiter)) || !(await User.findByPk(receive))) {
+      const userReceiveLike = await User.findByPk(receive);
+      const userEmmiterLike = await User.findByPk(emmiter);
+
+      if (!userEmmiterLike || !userReceiveLike) {
         return response.status(500).json({ error: 'User does not exists' });
       }
 
@@ -26,6 +29,12 @@ class LikeController {
             },
           }
         );
+
+        const userEmmiterLikeIo = request.connectedUsers[userEmmiterLike.id];
+        const userReceiveLikeIo = request.connectedUsers[userReceiveLike.id];
+
+        request.io.to(userEmmiterLikeIo).emit('match', userReceiveLike);
+        request.io.to(userReceiveLikeIo).emit('match', userEmmiterLike);
       }
 
       await Like.create({

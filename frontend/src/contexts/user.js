@@ -14,8 +14,12 @@ export default function UserProvider({ children }) {
     localStorage.setItem('user', JSON.stringify(data));
   }
 
+  function logoutUser() {
+    localStorage.removeItem('user');
+  }
+
   return (
-    <UserContext.Provider value={{ user, auth }}>
+    <UserContext.Provider value={{ user, auth, logoutUser }}>
       {children}
     </UserContext.Provider>
   );

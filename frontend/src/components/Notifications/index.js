@@ -1,12 +1,12 @@
 import React from 'react';
 import { Container } from './styles';
 
-export default function Notifications({ src, alt }) {
+export default function Notifications({ user }) {
   return (
     <Container>
-      <img src={src} alt={alt} />
+      <img src={user.avatar_url} alt={user.username} />
       <span>
-        Você deu match com <strong>user</strong>
+        Você deu match com <strong>{user.name}</strong>
       </span>
     </Container>
   );
