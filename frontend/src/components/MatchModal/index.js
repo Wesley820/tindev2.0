@@ -1,5 +1,5 @@
 import React from 'react';
-import match from '../../../assets/match.svg';
+import match from '../../assets/match.svg';
 import { Container, Content, Profile, Link } from './styles';
 
 export default function Match({ onClose, user }) {

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Switch from '../../../components/Switch';
-import Notifications from '../../../components/Notifications';
-import MatchAlert from '../../../components/MatchAlert';
+import Switch from '../../components/Switch';
+import Notifications from '../../components/Notifications';
+import MatchAlert from '../../components/MatchAlert';
 
 import { Container, HeaderMenu, NotificationContainer } from './styles';
 
@@ -17,7 +17,7 @@ export default function HeaderWeb({ notifications, user }) {
         <Switch />
       </HeaderMenu>
       {notifications.length === 0 ? (
-        <MatchAlert margin="150px 0 0" />
+        <MatchAlert margin="250px 0 0" />
       ) : (
         <NotificationContainer>
           <p>Matches</p>

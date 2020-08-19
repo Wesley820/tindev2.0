@@ -4,10 +4,10 @@ import { useAuth } from '../../contexts/user';
 import axios from '../../services/api';
 import io from 'socket.io-client';
 
-import HeaderWeb from './HeaderWeb';
-import HeaderMobile from './HeaderMobile';
-import CardUser from './CardUser';
-import MatchModal from './MatchModal';
+import HeaderWeb from '../../components/HeaderWeb';
+import HeaderMobile from '../../components/HeaderMobile';
+import CardUser from '../../components/CardUser';
+import MatchModal from '../../components/MatchModal';
 
 import { Container, CardContainer, EndUsers } from './styles';
 
@@ -29,7 +29,7 @@ export default function Main() {
 
   //connects to the server via sockets
   useEffect(() => {
-    const socket = io('http://192.168.1.87:5000', {
+    const socket = io('http://localhost:5000', {
       query: { user: user.id },
     });
 
